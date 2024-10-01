@@ -6,3 +6,4 @@ retool-secrets.yaml
 
 helm/charts
 .idea/
+nginx/
