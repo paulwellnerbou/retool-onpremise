@@ -4,8 +4,6 @@ postgresPassword=$(cat /dev/urandom | base64 | head -c 64)
 jwtSecret=$(cat /dev/urandom | base64 | head -c 256)
 encryptionKey=$(cat /dev/urandom | base64 | head -c 64)
 
-hostname=$1
-
 if [ -f ./docker.env ]; then
   mv docker.env docker.env.$(date +"%Y-%m-%d_%H-%M-%S")
 fi
@@ -27,10 +25,6 @@ echo 'POSTGRES_USER=retool_internal_user' >> docker.env
 echo 'POSTGRES_HOST=postgres' >> docker.env
 echo 'POSTGRES_PORT=5432' >> docker.env
 echo "POSTGRES_PASSWORD=${postgresPassword}" >> docker.env
-echo '' >> docker.env
-
-echo "# Change '${hostname}' to retool.yourcompany.com to set up SSL properly" >> docker.env
-echo "DOMAINS=${hostname} -> http://api:3000" >> docker.env
 echo '' >> docker.env
 
 echo '## Used to create links for your users, like new user invitations and forgotten password resets' >> docker.env
