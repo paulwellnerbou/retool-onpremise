@@ -101,7 +101,7 @@ services:
       - backend-network
       - db-connector-network
     volumes:
-      - ./posgresql-data:/var/lib/postgresql/data
+      - ./posgresql-data/data:/var/lib/postgresql/data
 
   # Postgres for storing application data
   user-postgres:
