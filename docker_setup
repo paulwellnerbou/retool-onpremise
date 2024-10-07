@@ -1,7 +1,11 @@
 #!/bin/bash
 
-postgresPassword=$(cat /dev/urandom | base64 | head -c 64)
 jwtSecret=$(cat /dev/urandom | base64 | head -c 256)
+
+if [ -z "$POSTGRES_PASSWORD" ]; then
+  echo "POSTGRES_PASSWORD not set, generating a new one"
+  POSTGRES_PASSWORD=$(cat /dev/urandom | base64 | head -c 64)
+fi
 
 if [ -z "$ENCRYPTION_KEY" ]; then
   echo "ENCRYPTION_KEY not set, generating a new one"
@@ -33,7 +37,7 @@ echo 'POSTGRES_DB=hammerhead_production' >> docker.env
 echo 'POSTGRES_USER=retool_internal_user' >> docker.env
 echo 'POSTGRES_HOST=postgres' >> docker.env
 echo 'POSTGRES_PORT=5432' >> docker.env
-echo "POSTGRES_PASSWORD=${postgresPassword}" >> docker.env
+echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> docker.env
 echo '' >> docker.env
 
 echo '## Used to create links for your users, like new user invitations and forgotten password resets' >> docker.env
