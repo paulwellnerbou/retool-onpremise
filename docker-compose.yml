@@ -28,7 +28,7 @@ services:
       - '3000:3000'
     restart: on-failure
     volumes:
-      - /opt/retool-data/secrets:/opt/retool-data/secrets
+      - ./secrets:/usr/local/secrets
       - ./keys:/root/.ssh
       - ssh:/retool_backend/autogen_ssh_keys
       - ./retool:/usr/local/retool-git-repo
@@ -63,9 +63,9 @@ services:
     links:
       - postgres
     volumes:
-      - /opt/retool-data/secrets:/opt/retool-data/secrets
+      - ./secrets:/usr/local/secrets
       - ./keys:/root/.ssh
-  
+
   db-connector:
     build:
       context: ./
@@ -140,4 +140,9 @@ networks:
 volumes:
   ssh:
   data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DB_DATA:-./db-data}
+      o: bind
   user-data:
