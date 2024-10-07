@@ -2,7 +2,16 @@
 
 postgresPassword=$(cat /dev/urandom | base64 | head -c 64)
 jwtSecret=$(cat /dev/urandom | base64 | head -c 256)
-encryptionKey=$(cat /dev/urandom | base64 | head -c 64)
+
+if [ -z "$ENCRYPTION_KEY" ]; then
+  echo "ENCRYPTION_KEY not set, generating a new one"
+  ENCRYPTION_KEY=$(cat /dev/urandom | base64 | head -c 64)
+fi
+
+if [ -z "$RETOOL_LICENSE_KEY" ]; then
+  echo "RETOOL_LICENSE_KEY not set, using trial license key"
+  RETOOL_LICENSE_KEY=EXPIRED-LICENSE-KEY-TRIAL
+fi
 
 if [ -f ./docker.env ]; then
   mv docker.env docker.env.$(date +"%Y-%m-%d_%H-%M-%S")
@@ -33,7 +42,7 @@ echo '# BASE_DOMAIN=https://retool.yourwebsite.com' >> docker.env
 echo '' >> docker.env
 
 echo '## Set key to encrypt and decrypt database passwords, etc.' >> docker.env
-echo "ENCRYPTION_KEY=${encryptionKey}" >> docker.env
+echo "ENCRYPTION_KEY=${ENCRYPTION_KEY}" >> docker.env
 echo '' >> docker.env
 
 echo "## Google SSO configuration" >> docker.env
@@ -41,10 +50,10 @@ echo "# CLIENT_ID={YOUR GOOGLE CLIENT ID}" >> docker.env
 echo '' >> docker.env
 
 echo '## License key' >> docker.env
-echo 'LICENSE_KEY=EXPIRED-LICENSE-KEY-TRIAL' >> docker.env
+echo "LICENSE_KEY=${RETOOL_LICENSE_KEY}" >> docker.env
 echo '' >> docker.env
 
 echo '## Uncomment this line if HTTPS is not set up' >> docker.env
-echo '# COOKIE_INSECURE=true' >> docker.env 
+echo 'COOKIE_INSECURE=true' >> docker.env 
 
 echo "Cool! Now add your license key in docker.env then run docker-compose up to launch Retool."
