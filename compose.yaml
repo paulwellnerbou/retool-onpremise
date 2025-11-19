@@ -111,7 +111,9 @@ services:
     networks:
       - backend
     volumes:
-      - data:/var/lib/postgresql/data
+      # - ../retool-data/postgres:/var/lib/postgresql/data
+      # - ../retool-data/initdb:/docker-entrypoint-initdb.d:ro
+      - ./postgres-data/data:/var/lib/postgresql/data
     restart: always
   
   retooldb-postgres:
@@ -125,16 +127,21 @@ services:
 
   # Optional Nginx container for handling TLS for your domain (requires setting DOMAINS and STAGE)
   https-portal:
-    image: tryretool/https-portal:latest
-    env_file: docker.env
-    environment:
-      # Change 'local' -> 'production' below once your domain is pointing to this server
-      STAGE: local 
-      CLIENT_MAX_BODY_SIZE: 40M
-      KEEPALIVE_TIMEOUT: 605
-      PROXY_CONNECT_TIMEOUT: 600
-      PROXY_SEND_TIMEOUT: 600
-      PROXY_READ_TIMEOUT: 600
+    image: nginx:latest
+    links:
+      - api
+    command: [nginx-debug, "-g", "daemon off;"] # Improve error logging in the container
+    volumes:
+      - /etc/nginx/conf.d:/etc/nginx/conf.d
+      - /etc/nginx/certs:/etc/nginx/certs
+    # environment:
+    #   # Change 'local' -> 'production' below once your domain is pointing to this server
+    #   STAGE: local 
+    #   CLIENT_MAX_BODY_SIZE: 40M
+    #   KEEPALIVE_TIMEOUT: 605
+    #   PROXY_CONNECT_TIMEOUT: 600
+    #   PROXY_SEND_TIMEOUT: 600
+    #   PROXY_READ_TIMEOUT: 600
     ports:
       - 80:80
       - 443:443
@@ -148,5 +155,4 @@ networks:
   code-executor:
 
 volumes:
-  data:
   retooldb-data:
