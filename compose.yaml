@@ -132,8 +132,9 @@ services:
       - api
     command: [nginx-debug, "-g", "daemon off;"] # Improve error logging in the container
     volumes:
-      - /etc/nginx/conf.d:/etc/nginx/conf.d
-      - /etc/nginx/certs:/etc/nginx/certs
+      - ./nginx/:/etc/nginx/conf.d
+      # - /etc/nginx/conf.d:/etc/nginx/conf.d
+      # - /etc/nginx/certs:/etc/nginx/certs
     # environment:
     #   # Change 'local' -> 'production' below once your domain is pointing to this server
     #   STAGE: local 
