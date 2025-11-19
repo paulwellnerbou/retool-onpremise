@@ -45,16 +45,21 @@ echo ""
 
 echo "Prompting for optional configuration..."
 
-read -p "  Retool license key: " licenseKey
-licenseKey=${licenseKey:-EXPIRED-LICENSE-KEY-TRIAL}
+# read -p "  Retool license key: " licenseKey
+# licenseKey=${licenseKey:-EXPIRED-LICENSE-KEY-TRIAL}
+licenseKey=${RETOOL_LICENSE_KEY:-EXPIRED-LICENSE-KEY-TRIAL}
 
-read -p "  Domain (e.g. retool.company.com) pointing to this server: " hostname
+# read -p "  Domain (e.g. retool.company.com) pointing to this server: " hostname
 hostname=${hostname:-$(dig +short myip.opendns.com @resolver1.opendns.com)}
 echo ""
 
 # Create docker.env with values
 
 random() { cat /dev/urandom | base64 | head -c "$1" | tr -d +/ ; }
+
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-$(random 64)}
+ENCRYPTION_KEY=${ENCRYPTION_KEY:-$(random 64)}
+JWT_SECRET=${JWT_SECRET:-$(random 256)}
 
 cat << EOF > docker.env
 # Environment variables reference: docs.retool.com/docs/environment-variables
@@ -65,7 +70,7 @@ POSTGRES_HOST=postgres
 POSTGRES_DB=hammerhead_production
 POSTGRES_PORT=5432
 POSTGRES_USER=retool_internal_user
-POSTGRES_PASSWORD=$(random 64)
+POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
 # Retool DB credentials
 RETOOLDB_POSTGRES_HOST=retooldb-postgres
@@ -83,10 +88,10 @@ WORKFLOW_TEMPORAL_CLUSTER_FRONTEND_HOST=temporal
 WORKFLOW_TEMPORAL_CLUSTER_FRONTEND_PORT=7233
 
 # Key to encrypt/decrypt sensitive values stored in the Postgres database
-ENCRYPTION_KEY=$(random 64)
+ENCRYPTION_KEY=$ENCRYPTION_KEY
 
 # Key to sign requests for authentication with Retool's backend API server
-JWT_SECRET=$(random 256)
+JWT_SECRET=$JWT_SECRET
 
 # License you received from my.retool.com or your Retool contact
 LICENSE_KEY=$licenseKey
