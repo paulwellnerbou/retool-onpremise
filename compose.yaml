@@ -111,8 +111,7 @@ services:
     networks:
       - backend
     volumes:
-      # - ../retool-data/postgres:/var/lib/postgresql/data
-      # - ../retool-data/initdb:/docker-entrypoint-initdb.d:ro
+      # - ./postgres-data/initdb:/docker-entrypoint-initdb.d:ro
       - ./postgres-data/data:/var/lib/postgresql/data
     restart: always
   
