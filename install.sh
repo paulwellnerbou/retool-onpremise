@@ -50,7 +50,8 @@ echo "Prompting for optional configuration..."
 licenseKey=${RETOOL_LICENSE_KEY:-EXPIRED-LICENSE-KEY-TRIAL}
 
 # read -p "  Domain (e.g. retool.company.com) pointing to this server: " hostname
-hostname=${hostname:-$(dig +short myip.opendns.com @resolver1.opendns.com)}
+# hostname=${hostname:-$(dig +short myip.opendns.com @resolver1.opendns.com)}
+hostname=${RETOOL_HOSTNAME:-$(dig +short myip.opendns.com @resolver1.opendns.com)}
 echo ""
 
 # Create docker.env with values
