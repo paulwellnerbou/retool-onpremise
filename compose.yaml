@@ -95,7 +95,7 @@ services:
     privileged: true
 
     # Option 2: Run unprivileged, potentially required with your host machine permissions
-    # user: retool_user
+    user: retool_user
     # environment:
     #   - ALLOW_UNSAFE_CODE_EXECUTION=true
 
