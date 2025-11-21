@@ -84,7 +84,7 @@ services:
       - code-executor
     depends_on:
       - postgres
-    restart: always
+    # restart: always
 
   code-executor:
     build:
@@ -98,6 +98,9 @@ services:
     # user: retool_user
     # environment:
     #   - ALLOW_UNSAFE_CODE_EXECUTION=true
+
+    environment:
+      - CONTAINER_UNPRIVILEGED_MODE=true
 
     networks:
       - code-executor
@@ -121,7 +124,7 @@ services:
     networks:
       - backend
     volumes:
-      - retooldb-data:/var/lib/postgresql/data
+      - ./postgres-data/retooldb-data:/var/lib/postgresql/data
     restart: always
 
   # Optional Nginx container for handling TLS for your domain (requires setting DOMAINS and STAGE)
@@ -154,5 +157,4 @@ networks:
   backend:
   code-executor:
 
-volumes:
-  retooldb-data:
+
